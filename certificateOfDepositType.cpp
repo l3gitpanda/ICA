@@ -10,15 +10,15 @@ certificateOfDepositType::certificateOfDepositType(const std::string& name,int a
 
 void certificateOfDepositType::createMonthlyStatement()
 {
-    balance += balance * interestRate;
-    if (monthsLeft > 0) monthsLeft--;
+    balance_ += balance_ * interestRate_;
+    if (monthsLeft_ > 0) monthsLeft_--;
 }
 
 void certificateOfDepositType::withdraw(double amount)
 {
     if (amount <= 0.0) return;
 
-    if (monthsLeft == 0)
+    if (monthsLeft_ == 0)
     {
         bankAccountType::withdraw(amount);
     }
@@ -28,6 +28,6 @@ void certificateOfDepositType::print() const
 {
     std::cout << "[certificateOfDepositType]\n";
     bankAccountType::print();
-    std::cout << "Interest rate: " << (interestRate * 100) << "%\n";
-    std::cout << "Months left: " << monthsLeft << "\n";
+    std::cout << "Interest rate: " << (interestRate_ * 100) << "%\n";
+    std::cout << "Months left: " << monthsLeft_ << "\n";
 }
