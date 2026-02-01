@@ -3,6 +3,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 struct AccountRecord
 {
@@ -34,9 +35,11 @@ private:
     bool isValidEmail(const std::string& email) const;
     bool isStrongPassword(const std::string& password) const;
     std::string hashPassword(const std::string& password) const;
+    int allocateUserId();
 
     int nextUserId_;
     std::unordered_map<std::string, AccountRecord> accountsByEmail_;
+    std::unordered_set<int> assignedUserIds_;
 };
 
 #endif // ACCOUNTS_DATABASE_H

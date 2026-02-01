@@ -20,7 +20,7 @@ AccountStatus AccountsDatabase::addAccount(const std::string& email, const std::
     if (accountsByEmail_.find(email) != accountsByEmail_.end())
         return AccountStatus::kDuplicateEmail;
 
-    const int userId = nextUserId_++;
+    const int userId = allocateUserId();
     if (userId <= 0)
         return AccountStatus::kDuplicateUserId;
 
@@ -30,6 +30,7 @@ AccountStatus AccountsDatabase::addAccount(const std::string& email, const std::
     record.userId = userId;
 
     accountsByEmail_.emplace(email, record);
+    assignedUserIds_.insert(userId);
     return AccountStatus::kSuccess;
 }
 
@@ -104,4 +105,19 @@ std::string AccountsDatabase::hashPassword(const std::string& password) const
     std::ostringstream out;
     out << std::hex << hashed;
     return out.str();
+}
+
+int AccountsDatabase::allocateUserId()
+{
+    int candidate = nextUserId_;
+    while (candidate > 0 && assignedUserIds_.find(candidate) != assignedUserIds_.end())
+    {
+        ++candidate;
+    }
+
+    if (candidate <= 0)
+        return -1;
+
+    nextUserId_ = candidate + 1;
+    return candidate;
 }
