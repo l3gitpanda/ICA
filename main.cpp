@@ -11,11 +11,26 @@
 #include "highInterestCheckingType.h"
 #include "certificateOfDepositType.h"
 #include "checkingAccountType.h"
+#include "accountsDatabase.h"
 
 using namespace std;
 
 int main()
 {
+    AccountsDatabase accountsDatabase;
+
+    const std::string email = "bill@example.com";
+    const std::string password = "Secur3!Pass";
+    const AccountStatus status = accountsDatabase.addAccount(email, password);
+    std::cout << "Account setup: " << AccountsDatabase::statusMessage(status) << '\n';
+
+    const AccountRecord* record = accountsDatabase.findByEmail(email);
+    if (record != nullptr)
+    {
+        std::cout << "Stored account: " << record->email
+                  << " (user ID " << record->userId << ")\n\n";
+    }
+
 	vector<bankAccountType *> accountsList;
 
 	accountsList.push_back(new savingsAccountType("Bill", 10200, 2500));
