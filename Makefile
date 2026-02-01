@@ -1,14 +1,18 @@
 CFLAGS = -Wall -Werror -Wpedantic -std=c++20 -O0 -g
 CC = g++
 
-OBJECTS = main.o bankAccountType.o savingsAccountType.o highInterestSavingsType.o certificateOfDepositType.o serviceChargeCheckingType.o checkingAccountType.o noServiceChargeCheckingType.o highInterestCheckingType.o
+OBJECTS = main.o bankAccountType.o accountsDatabase.o savingsAccountInterface.o savingsAccountType.o highInterestSavingsType.o certificateOfDepositType.o serviceChargeCheckingType.o checkingAccountType.o noServiceChargeCheckingType.o highInterestCheckingType.o
 
 run-tests: $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^
 
-main.o: main.cpp bankAccountType.o savingsAccountType.o highInterestSavingsType.o certificateOfDepositType.o
+main.o: main.cpp bankAccountType.o accountsDatabase.o savingsAccountInterface.o savingsAccountType.o highInterestSavingsType.o certificateOfDepositType.o
 
 highInterestSavingsType.o: highInterestSavingsType.cpp highInterestSavingsType.h bankAccountType.o  savingsAccountType.o
+
+savingsAccountInterface.o: savingsAccountInterface.cpp savingsAccountInterface.h accountsDatabase.o savingsAccountType.o
+
+accountsDatabase.o: accountsDatabase.cpp accountsDatabase.h
 
 savingsAccountType.o: savingsAccountType.cpp savingsAccountType.h bankAccountType.o
 
