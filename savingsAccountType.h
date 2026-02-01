@@ -7,7 +7,16 @@
 class savingsAccountType : public bankAccountType
 {
 public:
-    savingsAccountType(const std::string& name, int accountNumber, double accountBalance);
+    savingsAccountType(const std::string& name,
+                       int accountNumber,
+                       double accountBalance,
+                       const std::string& userId);
+
+    std::string getUserId() const;
+    void print() const override;
+
+private:
+    std::string userId_;
 };
 
 #endif
