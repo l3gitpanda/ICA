@@ -7,7 +7,7 @@ using namespace std;
 
 class checkingAccountType
 {
-    string relationalAccountName_;
+    string name_;
     int accountNumber_;
     float balance_ = 0;
     int foreignKey_;
