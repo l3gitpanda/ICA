@@ -21,15 +21,24 @@ enum class AccountStatus
     kDuplicateUserId
 };
 
+enum class LoginStatus
+{
+    kSuccess,
+    kAccountNotFound,
+    kIncorrectPassword
+};
+
 class AccountsDatabase
 {
 public:
     AccountsDatabase();
 
     AccountStatus addAccount(const std::string& email, const std::string& password);
+    LoginStatus login(const std::string& email, const std::string& password) const;
     const AccountRecord* findByEmail(const std::string& email) const;
 
     static std::string statusMessage(AccountStatus status);
+    static std::string statusMessage(LoginStatus status);
 
 private:
     bool isValidEmail(const std::string& email) const;

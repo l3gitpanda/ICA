@@ -28,8 +28,20 @@ int main()
     if (record != nullptr)
     {
         std::cout << "Stored account: " << record->email
-                  << " (user ID " << record->userId << ")\n\n";
+                  << " (user ID " << record->userId << ")\n";
     }
+
+    // Login with correct password (plain text — hashed internally for comparison)
+    LoginStatus loginResult = accountsDatabase.login(email, password);
+    std::cout << "Login attempt: " << AccountsDatabase::statusMessage(loginResult) << '\n';
+
+    // Login with wrong password
+    loginResult = accountsDatabase.login(email, "WrongPass1!");
+    std::cout << "Bad password:  " << AccountsDatabase::statusMessage(loginResult) << '\n';
+
+    // Login with unknown email
+    loginResult = accountsDatabase.login("nobody@example.com", password);
+    std::cout << "Bad email:     " << AccountsDatabase::statusMessage(loginResult) << "\n\n";
 
 	vector<bankAccountType *> accountsList;
 

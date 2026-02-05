@@ -34,6 +34,18 @@ AccountStatus AccountsDatabase::addAccount(const std::string& email, const std::
     return AccountStatus::kSuccess;
 }
 
+LoginStatus AccountsDatabase::login(const std::string& email, const std::string& password) const
+{
+    const auto it = accountsByEmail_.find(email);
+    if (it == accountsByEmail_.end())
+        return LoginStatus::kAccountNotFound;
+
+    if (it->second.passwordHash != hashPassword(password))
+        return LoginStatus::kIncorrectPassword;
+
+    return LoginStatus::kSuccess;
+}
+
 const AccountRecord* AccountsDatabase::findByEmail(const std::string& email) const
 {
     const auto it = accountsByEmail_.find(email);
@@ -56,6 +68,21 @@ std::string AccountsDatabase::statusMessage(AccountStatus status)
         return "Email already exists.";
     case AccountStatus::kDuplicateUserId:
         return "User ID conflict.";
+    default:
+        return "Unknown status.";
+    }
+}
+
+std::string AccountsDatabase::statusMessage(LoginStatus status)
+{
+    switch (status)
+    {
+    case LoginStatus::kSuccess:
+        return "Login successful.";
+    case LoginStatus::kAccountNotFound:
+        return "Account not found.";
+    case LoginStatus::kIncorrectPassword:
+        return "Incorrect password.";
     default:
         return "Unknown status.";
     }
