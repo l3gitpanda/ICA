@@ -12,10 +12,11 @@
 #include "certificateOfDepositType.h"
 #include "checkingAccountType.h"
 #include "accountsDatabase.h"
+#include "functionalUI.h"
 
 using namespace std;
 
-int main()
+void runSampleTests()
 {
 
 	vector<bankAccountType *> accountsList;
@@ -59,3 +60,25 @@ int main()
 	return 0;
 }
 
+int main()
+{
+    cout << "1) Run Functional UI" << endl;
+    cout << "2) Run Sample Account Tests" << endl;
+    cout << "Choice: ";
+
+    int choice;
+    cin >> choice;
+
+    if (choice == 1)
+    {
+        AccountsDatabase db;
+        FunctionalUI ui(db);
+        ui.run();
+    }
+    else if (choice == 2)
+    {
+        runSampleTests();
+    }
+
+    return 0;
+}
