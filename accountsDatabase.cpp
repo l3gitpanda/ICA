@@ -158,8 +158,8 @@ bool AccountsDatabase::withdrawChecking(int userId, double amount)
     const auto it = checkingByUserId_.find(userId);
     if (it == checkingByUserId_.end())
         return false;
-    it->second->withdraw(amount);
-    return true;
+    const bool success = it->second->withdraw(amount);
+    return success;
 }
 
 bool AccountsDatabase::withdrawSavings(int userId, double amount)
@@ -169,8 +169,8 @@ bool AccountsDatabase::withdrawSavings(int userId, double amount)
     const auto it = savingsByUserId_.find(userId);
     if (it == savingsByUserId_.end())
         return false;
-    it->second->withdraw(amount);
-    return true;
+    const bool success = it->second->withdraw(amount);
+    return success;
 }
 
 std::string AccountsDatabase::statusMessage(AccountStatus status)
