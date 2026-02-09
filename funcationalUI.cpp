@@ -43,9 +43,24 @@ void FunctionalUI::showMainMenu() {
 }
 
 void FunctionalUI::showLoggedInMenu() {
-    std::cout << "\nUser Menu (User ID: " << currentUserId_ << ")\n";
-    std::cout << "1) Checking\n";
-    std::cout << "2) Savings\n";
+    std::cout << "\nHome Screen (User ID: " << currentUserId_ << ")\n";
+
+    if (db_.hasChecking(currentUserId_)) {
+        std::cout << std::fixed << std::setprecision(2);
+        std::cout << "Checking balance: $" << db_.getCheckingBalance(currentUserId_) << "\n";
+    } else {
+        std::cout << "Checking balance: N/A\n";
+    }
+
+    if (db_.hasSavings(currentUserId_)) {
+        std::cout << std::fixed << std::setprecision(2);
+        std::cout << "Savings balance: $" << db_.getSavingsBalance(currentUserId_) << "\n";
+    } else {
+        std::cout << "Savings balance: N/A\n";
+    }
+
+    std::cout << "1) Checking details\n";
+    std::cout << "2) Savings details\n";
     std::cout << "3) Log out\n";
     std::cout << "4) Exit\n";
 }
@@ -117,6 +132,9 @@ void FunctionalUI::loginFlow() {
     currentUserId_ = id;
     loggedIn_ = true;
     std::cout << "Logged in.\n";
+
+    if (!db_.hasChecking(currentUserId_)) db_.createChecking(currentUserId_);
+    if (!db_.hasSavings(currentUserId_)) db_.createSavings(currentUserId_);
 }
 
 void FunctionalUI::logoutFlow() {
