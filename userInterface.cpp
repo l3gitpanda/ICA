@@ -61,8 +61,8 @@ void UserInterface::showLoggedInMenu() {
         std::cout << "Savings balance: N/A\n";
     }
 
-    std::cout << "1) Checking details\n";
-    std::cout << "2) Savings details\n";
+    std::cout << "1) Checking dashboard\n";
+    std::cout << "2) Savings dashboard\n";
     std::cout << "3) Log out\n";
     std::cout << "4) Exit\n";
 }
