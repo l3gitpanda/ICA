@@ -1,5 +1,5 @@
-#ifndef FUNCTIONAL_UI_H
-#define FUNCTIONAL_UI_H
+#ifndef USER_INTERFACE_H
+#define USER_INTERFACE_H
 
 #include <string>
 
