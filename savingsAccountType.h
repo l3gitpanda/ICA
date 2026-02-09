@@ -12,7 +12,7 @@ public:
     savingsAccountType(const std::string& name, int accountNumber, double accountBalance, int foreignKey);
 private:
     int foreignKey_;
-    double accountBalance_;
+    double balance_;
     int accountNumber_;
     string name_;
 };
