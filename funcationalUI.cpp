@@ -1,28 +1,9 @@
 #include "functionalUI.h"
+#include "accountsDatabase.h"
+
 #include <iostream>
 #include <limits>
 #include <iomanip>
-
-class AccountsDatabase {
-public:
-    int createUser(const std::string& email, const std::string& password);
-    int authenticate(const std::string& email, const std::string& password);
-
-    bool hasChecking(int userId);
-    bool hasSavings(int userId);
-
-    void createChecking(int userId);
-    void createSavings(int userId);
-
-    double getCheckingBalance(int userId);
-    double getSavingsBalance(int userId);
-
-    bool depositChecking(int userId, double amount);
-    bool depositSavings(int userId, double amount);
-
-    bool withdrawChecking(int userId, double amount);
-    bool withdrawSavings(int userId, double amount);
-};
 
 FunctionalUI::FunctionalUI(AccountsDatabase& db)
     : db_(db), currentUserId_(-1), loggedIn_(false) {}

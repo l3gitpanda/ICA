@@ -5,7 +5,7 @@
 #include <sstream>
 
 AccountsDatabase::AccountsDatabase()
-    : nextUserId_{100000}
+    : nextUserId_{100000}, nextAccountNumber_{200000}
 {
 }
 
@@ -40,6 +40,123 @@ const AccountRecord* AccountsDatabase::findByEmail(const std::string& email) con
     if (it == accountsByEmail_.end())
         return nullptr;
     return &it->second;
+}
+
+int AccountsDatabase::createUser(const std::string& email, const std::string& password)
+{
+    const AccountStatus status = addAccount(email, password);
+    if (status != AccountStatus::kSuccess)
+        return -1;
+
+    const AccountRecord* record = findByEmail(email);
+    return record ? record->userId : -1;
+}
+
+int AccountsDatabase::authenticate(const std::string& email, const std::string& password) const
+{
+    const AccountRecord* record = findByEmail(email);
+    if (record == nullptr)
+        return -1;
+
+    const std::string hashedPassword = hashPassword(password);
+    if (hashedPassword != record->passwordHash)
+        return -1;
+
+    return record->userId;
+}
+
+bool AccountsDatabase::hasChecking(int userId) const
+{
+    return checkingByUserId_.find(userId) != checkingByUserId_.end();
+}
+
+bool AccountsDatabase::hasSavings(int userId) const
+{
+    return savingsByUserId_.find(userId) != savingsByUserId_.end();
+}
+
+void AccountsDatabase::createChecking(int userId)
+{
+    if (assignedUserIds_.find(userId) == assignedUserIds_.end())
+        return;
+    if (hasChecking(userId))
+        return;
+
+    const int accountNumber = allocateAccountNumber();
+    checkingByUserId_[userId] = std::make_unique<checkingAccountType>(
+        "User " + std::to_string(userId), accountNumber, 0.0, userId);
+}
+
+void AccountsDatabase::createSavings(int userId)
+{
+    if (assignedUserIds_.find(userId) == assignedUserIds_.end())
+        return;
+    if (hasSavings(userId))
+        return;
+
+    const int accountNumber = allocateAccountNumber();
+    savingsByUserId_[userId] = std::make_unique<savingsAccountType>(
+        "User " + std::to_string(userId), accountNumber, 0.0, userId);
+}
+
+double AccountsDatabase::getCheckingBalance(int userId) const
+{
+    const auto it = checkingByUserId_.find(userId);
+    if (it == checkingByUserId_.end())
+        return 0.0;
+    return it->second->getBalance();
+}
+
+double AccountsDatabase::getSavingsBalance(int userId) const
+{
+    const auto it = savingsByUserId_.find(userId);
+    if (it == savingsByUserId_.end())
+        return 0.0;
+    return it->second->getBalance();
+}
+
+bool AccountsDatabase::depositChecking(int userId, double amount)
+{
+    if (amount <= 0.0)
+        return false;
+    const auto it = checkingByUserId_.find(userId);
+    if (it == checkingByUserId_.end())
+        return false;
+    it->second->deposit(amount);
+    return true;
+}
+
+bool AccountsDatabase::depositSavings(int userId, double amount)
+{
+    if (amount <= 0.0)
+        return false;
+    const auto it = savingsByUserId_.find(userId);
+    if (it == savingsByUserId_.end())
+        return false;
+    it->second->deposit(amount);
+    return true;
+}
+
+bool AccountsDatabase::withdrawChecking(int userId, double amount)
+{
+    if (amount <= 0.0)
+        return false;
+    const auto it = checkingByUserId_.find(userId);
+    if (it == checkingByUserId_.end())
+        return false;
+    it->second->withdraw(amount);
+    return true;
+}
+
+bool AccountsDatabase::withdrawSavings(int userId, double amount)
+{
+    if (amount <= 0.0)
+        return false;
+    const auto it = savingsByUserId_.find(userId);
+    if (it == savingsByUserId_.end())
+        return false;
+    it->second->withdraw(amount);
+    return true;
 }
 
 std::string AccountsDatabase::statusMessage(AccountStatus status)
@@ -121,4 +238,11 @@ int AccountsDatabase::allocateUserId()
 
     nextUserId_ = candidate + 1;
     return candidate;
+}
+
+int AccountsDatabase::allocateAccountNumber()
+{
+    if (nextAccountNumber_ <= 0)
+        return -1;
+    return nextAccountNumber_++;
 }
