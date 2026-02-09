@@ -53,16 +53,17 @@ void bankAccountType::deposit(double amount)
 
 // ====== Assigned stubs: withdraw & print ======
 
-void bankAccountType::withdraw(double amount)
+bool bankAccountType::withdraw(double amount)
 {
     // Sprint 0 behavior: keep it safe and non-crashing.
     // Later sprints can add overdraft rules, fees, etc.
     if (amount <= 0.0)
-        return;
+        return false;
 
     if (amount <= balance_)
         balance_ -= amount;
     // else: ignore (no overdraft in stub)
+    return true;
 }
 
 void bankAccountType::print() const
