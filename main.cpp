@@ -57,7 +57,7 @@ void runSampleTests()
 		cout << endl;
 	}
 
-	return 0;
+	return;
 }
 
 int main()
