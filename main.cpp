@@ -1,10 +1,10 @@
 #include "accountsDatabase.h"
-#include "functionalUI.h"
+#include "userInterface.h"
 
 int main()
 {
 	AccountsDatabase db;
-	FunctionalUI ui(db);
+	UserInterface ui(db);
 	ui.run();
 	return 0;
 }
