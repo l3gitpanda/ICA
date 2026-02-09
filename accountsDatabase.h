@@ -51,6 +51,9 @@ public:
     bool withdrawChecking(int userId, double amount);
     bool withdrawSavings(int userId, double amount);
 
+    bool transferCheckingToSavings(int userId, double amount);
+    bool transferSavingsToChecking(int userId, double amount);
+
     static std::string statusMessage(AccountStatus status);
 
 private:

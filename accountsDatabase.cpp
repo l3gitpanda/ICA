@@ -173,6 +173,54 @@ bool AccountsDatabase::withdrawSavings(int userId, double amount)
     return success;
 }
 
+bool AccountsDatabase::transferCheckingToSavings(int userId, double amount)
+{
+    if (amount <= 0.0) return false;
+    // Ensure both accounts exist to perform a transfer
+    if (!hasChecking(userId) || !hasSavings(userId)) return false;
+
+    // Withdraw from checking first
+    if (withdrawChecking(userId, amount))
+    {
+        // Then deposit to savings
+        if (depositSavings(userId, amount))
+        {
+            return true;
+        }
+        else
+        {
+            // If deposit fails, rollback the withdrawal
+            depositChecking(userId, amount);
+            return false;
+        }
+    }
+    return false;
+}
+
+bool AccountsDatabase::transferSavingsToChecking(int userId, double amount)
+{
+    if (amount <= 0.0) return false;
+    // Ensure both accounts exist to perform a transfer
+    if (!hasChecking(userId) || !hasSavings(userId)) return false;
+
+    // Withdraw from savings first
+    if (withdrawSavings(userId, amount))
+    {
+        // Then deposit to checking
+        if (depositChecking(userId, amount))
+        {
+            return true;
+        }
+        else
+        {
+            // If deposit fails, rollback the withdrawal
+            depositSavings(userId, amount);
+            return false;
+        }
+    }
+    return false;
+}
+
 std::string AccountsDatabase::statusMessage(AccountStatus status)
 {
     switch (status)

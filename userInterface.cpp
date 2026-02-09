@@ -149,12 +149,14 @@ void UserInterface::checkingMenu() {
         std::cout << "1) View balance\n";
         std::cout << "2) Deposit\n";
         std::cout << "3) Withdraw\n";
-        std::cout << "4) Back\n";
+        std::cout << "4) Withdraw to savings\n";
+        std::cout << "5) Back\n";
 
-        int c = getChoice(1, 4);
+        int c = getChoice(1, 5);
         if (c == 1) viewBalanceFlow(true);
         else if (c == 2) depositFlow(true);
         else if (c == 3) withdrawFlow(true);
+        else if (c == 4) transferFlow(true);
         else break;
     }
 }
@@ -165,12 +167,14 @@ void UserInterface::savingsMenu() {
         std::cout << "1) View balance\n";
         std::cout << "2) Deposit\n";
         std::cout << "3) Withdraw\n";
-        std::cout << "4) Back\n";
+        std::cout << "4) Withdraw to checking\n";
+        std::cout << "5) Back\n";
 
-        int c = getChoice(1, 4);
+        int c = getChoice(1, 5);
         if (c == 1) viewBalanceFlow(false);
         else if (c == 2) depositFlow(false);
         else if (c == 3) withdrawFlow(false);
+        else if (c == 4) transferFlow(false);
         else break;
     }
 }
@@ -204,4 +208,19 @@ void UserInterface::withdrawFlow(bool isChecking) {
 
     if (!ok) std::cout << "Withdraw failed.\n";
     else std::cout << "Withdraw successful.\n";
+}
+
+void UserInterface::transferFlow(bool fromChecking) {
+    std::string targetName = fromChecking ? "savings" : "checkings";
+    double amt = getMoney("Transfer amount to " + targetName + ": $");
+
+    bool ok = fromChecking 
+            ? db_.transferCheckingToSavings(currentUserId_, amt)
+            : db_.transferSavingsToChecking(currentUserId_, amt);
+
+    if (ok) {
+        std::cout << "Transfer successful.\n";
+    } else {
+        std::cout << "Transfer failed.\n"; 
+    }
 }

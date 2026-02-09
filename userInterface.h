@@ -33,6 +33,7 @@ private:
 
     void depositFlow(bool isChecking);
     void withdrawFlow(bool isChecking);
+    void transferFlow(bool fromChecking);
     void viewBalanceFlow(bool isChecking);
 };
 
