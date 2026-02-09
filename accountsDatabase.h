@@ -62,6 +62,9 @@ public:
     bool transferCheckingToSavings(int userId, double amount);
     bool transferSavingsToChecking(int userId, double amount);
 
+    // Resets the password for a given email. Returns true if successful, false if email not found.
+    bool resetPassword(const std::string& email, const std::string& newPassword);
+
     StrongPasswordErrors isStrongPassword(const std::string& password) const;
 
     static std::string statusMessage(AccountStatus status);

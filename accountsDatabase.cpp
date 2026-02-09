@@ -222,6 +222,18 @@ bool AccountsDatabase::transferSavingsToChecking(int userId, double amount)
     return false;
 }
 
+bool AccountsDatabase::resetPassword(const std::string& email, const std::string& newPassword)
+{
+    auto it = accountsByEmail_.find(email);
+    if (it == accountsByEmail_.end())
+        return false;
+    
+    // We assume isStrongPassword check is done by caller, but we could add it here too.
+    // However, the caller (UI) is responsible for the interaction/error display.
+    it->second.passwordHash = hashPassword(newPassword);
+    return true;
+}
+
 std::string AccountsDatabase::statusMessage(AccountStatus status)
 {
     switch (status)

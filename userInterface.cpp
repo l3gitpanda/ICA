@@ -13,9 +13,10 @@ void UserInterface::run() {
     while (true) {
         if (!loggedIn_) {
             showMainMenu();
-            int c = getChoice(1, 3);
+            int c = getChoice(1, 4);
             if (c == 1) createAccountFlow();
             else if (c == 2) loginFlow();
+            else if (c == 3) resetPasswordFlow();
             else break;
         } else {
             showLoggedInMenu();
@@ -39,7 +40,8 @@ void UserInterface::showMainMenu() {
     std::cout << "\nMain Menu\n";
     std::cout << "1) Create account\n";
     std::cout << "2) Log in\n";
-    std::cout << "3) Exit\n";
+    std::cout << "3) Reset Password\n";
+    std::cout << "4) Exit\n";
 }
 
 void UserInterface::showLoggedInMenu() {
@@ -158,6 +160,47 @@ void UserInterface::loginFlow() {
 
     if (!db_.hasChecking(currentUserId_)) db_.createChecking(currentUserId_);
     if (!db_.hasSavings(currentUserId_)) db_.createSavings(currentUserId_);
+}
+
+void UserInterface::resetPasswordFlow() {
+    std::cout << "\n--- Reset Password ---\n";
+    std::string email = getLine("Enter your email: ");
+
+    // Check if email exists
+    if (!db_.findByEmail(email)) {
+        std::cout << "No account with that email has been found.\n";
+        return;
+    }
+
+    std::string newPass;
+    while (true) {
+        newPass = getLine("Enter new password: ");
+        StrongPasswordErrors errors = db_.isStrongPassword(newPass);
+        
+        bool isStrong = errors.isLongEnough && 
+                        errors.hasUppercase && 
+                        errors.hasLowercase && 
+                        errors.hasDigit && 
+                        errors.hasSpecialChar;
+
+        if (isStrong) {
+            break;
+        }
+
+        std::cout << "Password does not meet complexity requirements:\n";
+        if (!errors.isLongEnough) std::cout << "- Must be at least 8 characters long\n";
+        if (!errors.hasUppercase) std::cout << "- Must contain at least one uppercase letter\n";
+        if (!errors.hasLowercase) std::cout << "- Must contain at least one lowercase letter\n";
+        if (!errors.hasDigit) std::cout << "- Must contain at least one digit\n";
+        if (!errors.hasSpecialChar) std::cout << "- Must contain at least one special character\n";
+        std::cout << "Please try again.\n";
+    }
+
+    if (db_.resetPassword(email, newPass)) {
+        std::cout << "Password reset successful. returning to login page...\n";
+    } else {
+        std::cout << "Error resetting password.\n";
+    }
 }
 
 void UserInterface::logoutFlow() {

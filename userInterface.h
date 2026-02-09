@@ -26,6 +26,7 @@ private:
 
     void createAccountFlow();
     void loginFlow();
+    void resetPasswordFlow();
     void logoutFlow();
 
     void checkingMenu();
